@@ -52,7 +52,7 @@ def get_damage(track, level):
     return data['gags']['tracks'][track][level - 1]
 
 
-def get_accuracy(track, level, cog, track_exp=8, bonus=0, _pres = False):
+def get_accuracy(track, level, cog, track_exp=8, bonus=0, _pres=False):
     if cog.lured:
         if track == "drop" or track == "lure" or track == "trap":
             return 0
@@ -114,18 +114,14 @@ def attack_cog(_track, _level, _target, _state, _pres):
         total_damage = base_damage
 
     accuracy = get_accuracy(_track, _level, _target)
-    roll = random.randint(1, 100)
 
-    if roll < accuracy:
-        _target.health -= total_damage
-        state.event_logs.append(f"Cog Level {_target.level} was attacked with a {_track} gag at level {_level}")
-        if _track == "squirt":
-            squirt_attack(_target, _state, _pres)
-        elif _track == "lure":
-            lure_attack(_state, _pres)
-
-    else:
-        state.event_logs.append(f"Cog Level {_target.level} was attacked with a {_track} gag at level {_level} but missed.")
+    _target.health -= total_damage
+    state.event_logs.append(f"Cog Level {_target.level} was attacked with a {_track} gag at level {_level}"
+                            f" | Accuracy: {accuracy}, Gag Pres: {_pres}")
+    if _track == "squirt":
+        squirt_attack(_target, _state, _pres)
+    elif _track == "lure":
+        lure_attack(_state, _pres)
 
 
 def setup_state(_cogs, _lured, _soaked, _pres_squirt, _pres_lure):

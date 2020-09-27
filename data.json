@@ -1,0 +1,39 @@
+{
+  "gags": {
+    "tracks": {
+      "trap": [20, 30, 45, 65, 90, 140, 200, 240],
+      "lure": [0, 0, 0, 0, 0, 0, 0, 0],
+      "sound": [4, 6, 11, 16, 21, 32, 50, 65],
+      "squirt": [4, 8, 12, 21, 30, 56, 80, 115],
+      "zap": [4, 6, 10, 16, 24, 40, 66, 80],
+      "throw": [7, 11, 18, 30, 45, 75, 110, 145],
+      "drop": [12, 20, 35, 55, 80, 125, 180, 220]
+    },
+    "accuracy": {
+      "trap": 100,
+      "sound": 95,
+      "squirt": 95,
+      "zap": 30,
+      "throw": 75,
+      "drop": 50
+    }
+  },
+  "cogs": {
+    "health": {
+      "1": 6, "2": 12, "3": 20, "4": 30,
+      "5": 42, "6": 56, "7": 72, "8": 90,
+      "9": 110, "10": 132, "11": 156, "12": 182,
+      "13": 210, "14": 240, "15": 272, "16": 306,
+      "17": 342, "18": 380
+    },
+    "cog_defense": [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 65, 65, 65, 65, 65, 65],
+    "exe_defense": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 70, 70, 70, 70, 70],
+    "types": {
+      "sellbot": ["Cold Caller", "Telemarketer", "Name Dropper", "Glad Hander", "Mover & Shaker", "Two Face", "The Mingler", "Mr. Hollywood"],
+      "cashbot": ["Short Change", "Penny Pincher", "Tightwad", "Bean Counter", "Number Cruncher", "Money Bags", "Loan Shark", "Robber Baron"],
+      "lawbot": ["Bottom Feeder", "Bloodsucker", "Double Talker", "Ambulance Chaser", "Backstabber", "Spin Doctor", "Legal Eagle", "Big Wig"],
+      "bossbot": ["Flunky", "Pencil Pusher", "Yesman", "Micromanager", "Downsizer", "Head Hunter", "Corporate Raider", "The Big Cheese"],
+      "boardbot": ["Con Artist"]
+    }
+  }
+}

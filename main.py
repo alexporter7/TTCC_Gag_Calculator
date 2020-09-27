@@ -41,6 +41,7 @@ class Cog:
             self.lured_rounds += 1
 
 
+# ======= Battle State Class =======
 class BattleState:
     def __init__(self, _cogs):
         self.cogs = _cogs
@@ -51,19 +52,29 @@ def get_damage(track, level):
     return data['gags']['tracks'][track][level - 1]
 
 
-def get_accuracy(track, level, cog, track_exp=8, bonus=0):
+def get_accuracy(track, level, cog, track_exp=8, bonus=0, _pres = False):
     if cog.lured:
-        pass
+        if track == "drop" or track == "lure" or track == "trap":
+            return 0
+        if cog.pres_lure:
+            lure_decay = (cog.lured_rounds - 1) * 5
+        else:
+            lure_decay = cog.lured_rounds * 5
+        print(lure_decay)
+        return 100 - lure_decay
     else:
         accuracies = data['gags']['accuracy']
         if track == "lure":
             base_accuracy = 50 + (10 * math.floor(level / 2))
         else:
             base_accuracy = accuracies[track]
+        if track == "drop" and _pres:
+            base_accuracy += 20
         calculated_accuracy = base_accuracy + (track_exp - 1) * 10 - cog.defense + (bonus * 20)
         if calculated_accuracy > 95:
             calculated_accuracy = 95
-    return calculated_accuracy
+        return calculated_accuracy
+    return 0
 
 
 def squirt_attack(_target, _state, _pres):
@@ -178,7 +189,7 @@ if __name__ == '__main__':
 
     state = get_cogs()
     attack_cog("lure", 6, state.cogs[LEFT], state, True)
-    attack_cog("squirt", 5, state.cogs[LEFT], state, True)
+    attack_cog("drop", 5, state.cogs[LEFT], state, True)
 
     print_state(state)
 

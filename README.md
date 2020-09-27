@@ -1,5 +1,6 @@
 # TTCC_Gag_Calculator
-Find best attack strategy using OCR to identify levels.
+Find best attack strategy using OCR to identify levels. This was *heavily* inspired by multidragon's gag calculator.
+Link: https://multidragon.github.io/ttcc-new.html
 
 ## Notice
 This is not completed yet. The OCR is still being tweaked and hasn't at the time of this posting been implemented. I plan on getting the gag logic close to finished before integrating the OCR into the script.

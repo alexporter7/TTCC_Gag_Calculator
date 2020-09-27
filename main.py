@@ -10,7 +10,7 @@ MID_LEFT = 1
 MID_RIGHT = 2
 RIGHT = 3
 
-index_position = {0: "LEFT", 1: "MID LEFT", 2: "MID RIGHT", 3:"RIGHT"}
+index_position = {0: "LEFT", 1: "MID LEFT", 2: "MID RIGHT", 3: "RIGHT"}
 
 # Create the cogs with health
 cogs = [None, None, None, None]
@@ -27,6 +27,7 @@ class Cog:
         self.defense = 0
         self.index = index
         self.lured_rounds = 0
+        self.alive = True
         self.prev_attack = []
         # If the cog is an executive set health * 1.5
         if exe:
@@ -64,7 +65,10 @@ def get_accuracy(track, level, cog, track_exp=8, bonus=0, _pres=False):
         else:
             lure_decay = cog.lured_rounds * 5
         print(lure_decay)
-        return 100 - lure_decay
+        _accuracy = 100 - lure_decay
+        if _accuracy > 95:
+            _accuracy = 95
+        return _accuracy
     else:
         accuracies = data['gags']['accuracy']
         if track == "lure":
@@ -104,6 +108,17 @@ def lure_attack(_cog, _pres):
         _cog.lured = True
 
 
+def attack_cogs(_attacks, _targets, _state):
+    current_attacks = []
+    # Cycle through gag turn order
+    # Check if cogs are dead
+    #    Process attacks by track
+    #       Zap will be the hardest to determine (since targets are defined by order and initial target
+    #    Group attacks with bonus damage
+    #           Damage cogs per round
+    #           Set dead cogs
+
+
 def attack_cog(_track, _level, _target, _state, _pres):
     gag_damages = data['gags']['tracks']
     base_damage = gag_damages[_track][_level - 1]
@@ -124,12 +139,12 @@ def attack_cog(_track, _level, _target, _state, _pres):
 
         _cog.health -= total_damage
         _state.event_logs.append(f"Cog Level {_cog.level} was attacked with a {_track} gag at level {_level}"
-                                f" | Accuracy: {accuracy}, Gag Pres: {_pres}")
-        if _track == "squirt":
+                                 f" | Accuracy: {accuracy}, Gag Pres: {_pres}")
+        if _track == "lure":
+            lure_attack(_cog, _pres)
+        elif _track == "squirt":
             squirt_attack(_cog, _state, _pres)
             _cog.lured = False
-        elif _track == "lure":
-            lure_attack(_cog, _pres)
 
 
 def setup_state(_cogs, _lured, _soaked, _pres_squirt, _pres_lure):
@@ -152,18 +167,37 @@ def setup_state(_cogs, _lured, _soaked, _pres_squirt, _pres_lure):
 
 
 def update_state(_state):
+    bonus_damage = {"sound": 0, "squirt": 0, "throw": 0, "drop": 0}
+    for _cog in _state.cogs:
+        if _cog.prev_attack is not None:
+            _attk_arr = []
+            _bonus_trk = []
+            for _atk in _cog.prev_attack:
+                if _atk['track'] not in _attk_arr:
+                    _attk_arr.append(_atk['track'])
+                else:
+                    _bonus_trk.append(_atk['track'])
+            for _track in _bonus_trk:
+                for _atk in _cog.prev_attack:
+                    if _atk['track'] == _track:
+                        bonus_damage[_track] += _atk['damage']
+    print(bonus_damage)
+
     for _cog in _state.cogs:
         _cog.lured_rounds += 1
         _cog.prev_attack = []
 
 
 def close_state(_state):
-    for _cog in _state.cogs:
-        if _cog.prev_attack is not None:
-            print(_cog.prev_attack)
+    # Remove Cogs
+    for x in range(len(_state.cogs)):
+        _state.cogs[x] = None
 
 
 def print_state(_state):
+    for _cog in _state.cogs:
+        if _cog.prev_attack is not None:
+            print(_cog.prev_attack)
     for _cog in _state.cogs:
         print(f"Cog Level: {_cog.level} | Cog Health: {_cog.health} | Lured: {_cog.lured} | Soaked: {_cog.soaked}"
               f" | Pres Lure: {_cog.pres_lure} | Lured Rounds: {_cog.lured_rounds} | Position: {index_position[_cog.index]}")
@@ -192,12 +226,12 @@ def get_cogs():
 if __name__ == '__main__':
 
     state = get_cogs()
-    attack_cog("lure", 6, state.cogs, state, True)
-    print_state(state)
+    # attack_cog("lure", 6, state.cogs, state, True)
     attack_cog("squirt", 5, [state.cogs[LEFT]], state, False)
     attack_cog("squirt", 5, [state.cogs[LEFT]], state, False)
 
     print_state(state)
+    update_state(state)
     close_state(state)
 
     for event in state.event_logs:
